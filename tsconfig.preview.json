@@ -1,0 +1,8 @@
+{
+  "extends": "@sindresorhus/tsconfig",
+	"compilerOptions": {
+		"outDir": "./preview/dist",
+	},
+  "include": ["./src", "./src/**/*", "./preview/index.tsx"],
+  "exclude": ["node_modules"]
+}

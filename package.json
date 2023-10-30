@@ -1,0 +1,27 @@
+{
+  "name": "ink-multi-select",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "build:preview": "tsc -p tsconfig.preview.json",
+    "preview": "tsc -p tsconfig.preview.json && node ./preview/dist/preview/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "figures": "^6.0.1",
+    "ink": "^4.4.1",
+    "react": "^18.2.0",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "@sindresorhus/tsconfig": "^5.0.0",
+    "@types/node": "^20.8.9",
+    "@types/react": "^18.2.33"
+  }
+}
