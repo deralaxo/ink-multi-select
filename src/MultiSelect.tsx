@@ -1,13 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Box, useStdin } from "ink";
+import React, { useCallback, useState } from "react";
+import { Box, useInput } from "ink";
 import Indicator from "./components/Indicator.js";
 import ItemComponent from "./components/Item.js";
 import CheckBox from "./components/Checkbox.js";
-
-const ARROW_UP = "\u001B[A";
-const ARROW_DOWN = "\u001B[B";
-const ENTER = "\r";
-const SPACE = " ";
 
 type Item<T> = {
   label: string;
@@ -28,8 +23,6 @@ type MultiSelectProps<T> = {
   onUnselect?: (unselectedItem: Item<T>) => void;
   onSubmit?: (selectedItems: Item<T>[]) => void;
   onHighlight?: (highlightedItem: Item<T>) => void;
-  stdin?: NodeJS.ReadStream;
-  setRawMode?: (mode: boolean) => void;
 };
 
 const MultiSelect = function <T>({
@@ -45,8 +38,6 @@ const MultiSelect = function <T>({
   onUnselect = () => {},
   onSubmit = () => {},
   onHighlight = () => {},
-  stdin,
-  setRawMode,
 }: MultiSelectProps<T>) {
   const [highlightedIndex, setHighlightedIndex] = useState(initialIndex);
   const [selectedItems, setSelectedItems] = useState(defaultSelected);
@@ -76,55 +67,40 @@ const MultiSelect = function <T>({
     onSubmit(selectedItems);
   }, [selectedItems, onSubmit]);
 
-  const handleInput = useCallback(
-    (data: Buffer) => {
-      const input = data.toString();
-
-      if (input === ARROW_UP) {
-        setHighlightedIndex((prevIndex) => {
-          const index =
-            prevIndex === 0 ? slicedItems.length - 1 : prevIndex - 1;
-          onHighlight(slicedItems[index]!);
-          return index;
-        });
-      } else if (input === ARROW_DOWN) {
-        setHighlightedIndex((prevIndex) => {
-          const index =
-            prevIndex === slicedItems.length - 1 ? 0 : prevIndex + 1;
-          onHighlight(slicedItems[index]!);
-          return index;
-        });
-      } else if (input === ENTER) {
-        handleSubmit();
-      } else if (input === SPACE) {
-        handleSelect(slicedItems[highlightedIndex]!);
-      }
-    },
-    [
-      highlightedIndex,
-      handleSubmit,
-      slicedItems,
-      handleSelect,
-      onHighlight,
-      setHighlightedIndex,
-    ]
+  useInput(
+    useCallback(
+      (input, key) => {
+        if (key.upArrow) {
+          setHighlightedIndex((prevIndex) => {
+            const index =
+              prevIndex === 0 ? slicedItems.length - 1 : prevIndex - 1;
+            onHighlight(slicedItems[index]!);
+            return index;
+          });
+        } else if (key.downArrow) {
+          setHighlightedIndex((prevIndex) => {
+            const index =
+              prevIndex === slicedItems.length - 1 ? 0 : prevIndex + 1;
+            onHighlight(slicedItems[index]!);
+            return index;
+          });
+        } else if (key.return) {
+          handleSubmit();
+        } else if (input === " ") {
+          handleSelect(slicedItems[highlightedIndex]!);
+        }
+      },
+      [
+        setHighlightedIndex,
+        onHighlight,
+        handleSelect,
+        handleSubmit,
+        slicedItems,
+        highlightedIndex,
+      ]
+    ),
+    { isActive: focus }
   );
-
-  useEffect(() => {
-    if (focus && stdin && setRawMode) {
-      stdin.setRawMode(true);
-      stdin.resume();
-      stdin.on("data", handleInput);
-
-      return () => {
-        stdin.removeListener("data", handleInput);
-        stdin.setRawMode(false);
-        stdin.pause();
-      };
-    }
-
-    return () => {};
-  }, [focus, stdin, setRawMode, handleInput]);
 
   return (
     <Box flexDirection="column">
@@ -148,9 +124,6 @@ const MultiSelect = function <T>({
   );
 };
 
-export default function <T>(props: MultiSelectProps<T>) {
-  const { stdin, setRawMode } = useStdin();
-  return <MultiSelect {...props} stdin={stdin} setRawMode={setRawMode} />;
-}
+export default MultiSelect;
 
 export { Indicator, ItemComponent, CheckBox, Item };

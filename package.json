@@ -1,6 +1,6 @@
 {
   "name": "@deralaxo/ink-multi-select",
-  "version": "1.0.0",
+  "version": "1.0.21",
   "description": "Multi-select component for Ink",
   "type": "module",
   "main": "./dist/index.js",
