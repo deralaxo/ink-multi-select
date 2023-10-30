@@ -46,11 +46,22 @@ const MultiSelect = function <T>({
 
   const slicedItems = hasLimit ? items.slice(0, limit) : items;
 
+  const includesItems = (item: Item<T>, selectedItems: Item<T>[]) => {
+    return (
+      selectedItems.filter(
+        (selectedItem) =>
+          selectedItem.value === item.value && selectedItem.label === item.label
+      ).length > 0
+    );
+  };
+
   const handleSelect = useCallback(
     (item: Item<T>) => {
-      if (selectedItems.includes(item)) {
+      if (includesItems(item, selectedItems)) {
         const newSelectedItems = selectedItems.filter(
-          (selectedItem) => selectedItem !== item
+          (selectedItem) =>
+            selectedItem.value !== item.value &&
+            selectedItem.label !== item.label
         );
         setSelectedItems(newSelectedItems);
         onUnselect(item);
@@ -107,7 +118,7 @@ const MultiSelect = function <T>({
       {slicedItems.map((item, index) => {
         const key = item.key || item.label;
         const isHighlighted = index === highlightedIndex;
-        const isSelected = selectedItems.includes(item);
+        const isSelected = includesItems(item, selectedItems);
 
         return (
           <Box key={key}>
