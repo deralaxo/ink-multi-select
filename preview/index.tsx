@@ -1,6 +1,6 @@
 import { Box, Text, render, useApp } from "ink";
 import React from "react";
-import MultiSelect from "../src/MultiSelect.js";
+import MultiSelect from "../src/index.js";
 
 type Items = { label: string; value: string | boolean | number | object }[];
 

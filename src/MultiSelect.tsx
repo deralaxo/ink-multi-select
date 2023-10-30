@@ -12,6 +12,7 @@ const SPACE = " ";
 type Item<T> = {
   label: string;
   value: T;
+  key?: string | number;
 };
 
 type MultiSelectProps<T> = {
@@ -28,7 +29,7 @@ type MultiSelectProps<T> = {
   onSubmit?: (selectedItems: Item<T>[]) => void;
   onHighlight?: (highlightedItem: Item<T>) => void;
   stdin?: NodeJS.ReadStream;
-  setRawMode?: (value: boolean) => void;
+  setRawMode?: (mode: boolean) => void;
 };
 
 const MultiSelect = function <T>({
@@ -44,11 +45,11 @@ const MultiSelect = function <T>({
   onUnselect = () => {},
   onSubmit = () => {},
   onHighlight = () => {},
+  stdin,
+  setRawMode,
 }: MultiSelectProps<T>) {
   const [highlightedIndex, setHighlightedIndex] = useState(initialIndex);
   const [selectedItems, setSelectedItems] = useState(defaultSelected);
-
-  const { stdin, setRawMode } = useStdin();
 
   const hasLimit = limit !== null && limit < items.length;
 
@@ -68,7 +69,7 @@ const MultiSelect = function <T>({
         onSelect(item);
       }
     },
-    [selectedItems, onSelect, onUnselect]
+    [selectedItems, onSelect, onUnselect, setSelectedItems]
   );
 
   const handleSubmit = useCallback(() => {
@@ -99,11 +100,18 @@ const MultiSelect = function <T>({
         handleSelect(slicedItems[highlightedIndex]!);
       }
     },
-    [highlightedIndex, handleSubmit, slicedItems, handleSelect, onHighlight, setHighlightedIndex]
+    [
+      highlightedIndex,
+      handleSubmit,
+      slicedItems,
+      handleSelect,
+      onHighlight,
+      setHighlightedIndex,
+    ]
   );
 
   useEffect(() => {
-    if (focus && stdin) {
+    if (focus && stdin && setRawMode) {
       stdin.setRawMode(true);
       stdin.resume();
       stdin.on("data", handleInput);
@@ -121,7 +129,7 @@ const MultiSelect = function <T>({
   return (
     <Box flexDirection="column">
       {slicedItems.map((item, index) => {
-        const key = index;
+        const key = item.key || item.label;
         const isHighlighted = index === highlightedIndex;
         const isSelected = selectedItems.includes(item);
 
@@ -140,6 +148,9 @@ const MultiSelect = function <T>({
   );
 };
 
-export default MultiSelect;
+export default function <T>(props: MultiSelectProps<T>) {
+  const { stdin, setRawMode } = useStdin();
+  return <MultiSelect {...props} stdin={stdin} setRawMode={setRawMode} />;
+}
 
 export { Indicator, ItemComponent, CheckBox, Item };

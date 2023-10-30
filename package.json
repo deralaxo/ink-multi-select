@@ -1,9 +1,11 @@
 {
-  "name": "ink-multi-select",
+  "name": "@deralaxo/ink-multi-select",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Multi-select component for Ink",
   "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "build:preview": "tsc -p tsconfig.preview.json",
@@ -11,17 +13,31 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "author": "Dawid Harat",
+  "license": "MIT",
   "dependencies": {
-    "figures": "^6.0.1",
-    "ink": "^4.4.1",
-    "react": "^18.2.0",
-    "typescript": "^5.2.2"
+    "figures": "6.0.1",
+    "ink": "4.4.1",
+    "react": "18.2.0",
+    "typescript": "5.2.2"
   },
   "devDependencies": {
-    "@sindresorhus/tsconfig": "^5.0.0",
-    "@types/node": "^20.8.9",
-    "@types/react": "^18.2.33"
+    "@sindresorhus/tsconfig": "5.0.0",
+    "@types/node": "20.8.9",
+    "@types/react": "18.2.33"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deralaxo/ink-multi-select.git"
+  },
+  "bugs": {
+    "url": "https://github.com/deralaxo/ink-multi-select/issues"
+  },
+  "homepage": "https://github.com/deralaxo/ink-multi-select#readme",
+  "directories": {
+    "lib": "dist"
   }
 }
