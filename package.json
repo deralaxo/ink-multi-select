@@ -8,8 +8,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "build:preview": "tsc -p tsconfig.preview.json",
-    "preview": "tsc -p tsconfig.preview.json && node ./preview/dist/preview/index.js",
+    "build:demo": "tsc -p tsconfig.demo.json",
+    "demo": "tsc -p tsconfig.demo.json && node ./demo/dist/demo/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
